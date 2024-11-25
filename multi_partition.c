@@ -26,35 +26,57 @@ void print_array(int *arr, int n)
 void multi_partition(long long *Input, int n, long long *P, int np, long long *Output, int *Pos)
 {
     int i, j;
+    int iOutput = 0;
     for(i = 0; i < np; i++) {
         for(j = 0; j < n; j++) {
+            // printf("i: %d, j: %d, P[i]: %lld, Input[j]: %lld\n", i, j, P[i], Input[j]);
             if(Input[j] < P[i]) {
                 if((i-1 < 0) || (Input[j] >= P[i-1])) {
-                    Output[Pos[i]] = Input[j];
-                    Pos[i]++;
+                    Output[iOutput] = Input[j];
+                    iOutput++;
+                    if(i+1 < np)  
+                        Pos[i+1]++;
                 }
             }
         }
+        Pos[i+1] += Pos[i];
     }
-    printf("Output: ");
-    print_array_long_long(Output, n);
-    printf("Pos: ");
-    print_array(Pos, np);
 }
 
 int main()
 {
     srand(time(NULL));
-    int n = 10;
-    long long input[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    int n = 14;
+    // long long *input = malloc(n * sizeof(long long));
+    // if (input == NULL) {
+    //     fprintf(stderr, "Erro ao alocar memória para input\n");
+    //     return 1;
+    // }
+    long long input[100] = {8, 4, 13, 7, 11, 100, 44, 3, 7, 7, 100, 110, 46, 44};
 
-    long long P[20] = {3, 5, 6, LLONG_MAX};
     int nP = 4;
+    long long P[20] = {12, 70, 90, LLONG_MAX};
 
-    long long output[10];
-    int pos[20] = {0};
+    long long *output = malloc(n * sizeof(long long));
+    if (output == NULL) {
+        fprintf(stderr, "Erro ao alocar memória para output\n");
+        return 1;
+    }
+
+    int *pos = (int*) calloc(nP, sizeof(int));
+    if (output == NULL) {
+        fprintf(stderr, "Erro ao alocar memória para pos\n");
+        return 1;
+    }
 
     multi_partition(input, n, P, nP, output, pos);
 
+    printf("Output: ");
+    print_array_long_long(output, n);
+    printf("Pos: ");
+    print_array(pos, nP);
+
+    free(output);
+    free(pos);
     return 0;
 }
