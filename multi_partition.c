@@ -4,6 +4,7 @@
 #include <string.h>
 #include <time.h>
 #include <limits.h>
+#include "verifica_particoes.h"
 
 long long geraAleatorioLL()
 {
@@ -64,14 +65,25 @@ void multi_partition(long long *Input, int n, long long *P, int np, long long *O
         }
         Pos[i + 1] += Pos[i];
     }
+
+    for (i = 0; i < np; i++)
+    {
+        for (j = 0; j < n; j++)
+        {
+
+        }
+    }
 }
 
-int compare(const void *a, const void *b) {
+int compare(const void *a, const void *b)
+{
     long long arg1 = *(const long long *)a;
     long long arg2 = *(const long long *)b;
 
-    if (arg1 < arg2) return -1;
-    if (arg1 > arg2) return 1;
+    if (arg1 < arg2)
+        return -1;
+    if (arg1 > arg2)
+        return 1;
     return 0;
 }
 
@@ -79,10 +91,11 @@ int main()
 {
     srand(time(NULL));
     int n = 14;
-    int nP = 4;
+    int nP = 10;
 
     long long *input = malloc(n * sizeof(long long));
-    if (input == NULL) {
+    if (input == NULL)
+    {
         fprintf(stderr, "Erro ao alocar memória para input\n");
         return 1;
     }
@@ -90,13 +103,14 @@ int main()
     geraNaleatorios(input, n);
 
     long long *P = malloc(nP * sizeof(long long));
-    if (P == NULL) {
+    if (P == NULL)
+    {
         fprintf(stderr, "Erro ao alocar memória para P\n");
         return 1;
     }
 
     geraNaleatorios(P, nP);
-    P[nP-1] = LLONG_MAX;
+    P[nP - 1] = LLONG_MAX;
 
     qsort(P, nP, sizeof(long long), compare);
 
@@ -125,6 +139,8 @@ int main()
     print_array_long_long(output, n);
     printf("Pos: ");
     print_array(pos, nP);
+
+    verifica_particoes(input, n, P, nP, output, pos);
 
     free(output);
     free(pos);
