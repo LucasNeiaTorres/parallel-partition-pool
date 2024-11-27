@@ -247,10 +247,10 @@ int main()
 
     qsort(P, nP, sizeof(long long), compare);
 
-    printf("Input: ");
-    print_array_long_long(Input, n);
-    printf("P: ");
-    print_array_long_long(P, nP);
+    // printf("Input: ");
+    // print_array_long_long(Input, n);
+    // printf("P: ");
+    // print_array_long_long(P, nP);
 
     long long *output = malloc(n * sizeof(long long));
     if (output == NULL)
@@ -271,6 +271,32 @@ int main()
         return 1;
     }
 
+    long long *inputG = malloc(NTIMES * n * sizeof(long long));
+    if (inputG == NULL) {
+        fprintf(stderr, "Erro ao alocar memória para inputG\n");
+        free(Input);
+        free(P);    
+        free(output); 
+        free(pos);
+        return 1;
+    }
+
+    long long *PG = malloc(NTIMES * nP * sizeof(long long));
+    if (PG == NULL) {
+        fprintf(stderr, "Erro ao alocar memória para PG\n");
+        free(Input);
+        free(P);    
+        free(output); 
+        free(pos);
+        free(inputG);
+        return 1;
+    }
+
+    for (int j = 0; j < NTIMES; j++) {
+        memcpy(inputG + (j * n), Input, n * sizeof(long long));
+        memcpy(PG + (j * nP), P, nP * sizeof(long long));
+    }
+
     init_thread_pool(); 
 
     double timeSeconds = 0.0;
@@ -279,7 +305,7 @@ int main()
     chrono_start(&time);
 
     for (int i = 0; i < NTIMES; i++) {
-        multi_partition(Input, n, P, nP, output, pos);
+        multi_partition(&inputG[i * n], n, &PG[i * nP], nP, output, pos);
     }
 
     chrono_stop(&time);
@@ -298,5 +324,7 @@ int main()
     free(pos);
     free(Input);
     free(P);
+    free(inputG);
+    free(PG);
     return 0;
 }
