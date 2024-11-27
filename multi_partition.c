@@ -24,7 +24,7 @@ typedef struct
 long long *Input;
 int n;
 int nP;
-int numThreads = 2;
+int numThreads;
 pthread_t threads[MAX_THREADS];
 ThreadData *taskQueue[MAX_TASKS];
 int taskIndex = 0;
@@ -219,10 +219,19 @@ void init_thread_pool()
 
 // TODO: corrige veriicação particionamento: tudo 0 está dando correto
 
-int main()
+int main(int argc, char *argv[])
 {
-    n = 14;
-    nP = 10;
+    if (argc != 4) {
+        printf("usage: %s <numElemInput> <numElemP> <nThreads>\n", argv[0]);
+        return 0;
+    } else if(atoi(argv[3]) > MAX_THREADS) {
+        printf("Número de threads maior que o máximo permitido\n");
+        return 0;
+    } else {
+        numThreads = atoi(argv[3]);
+        nP = atoi(argv[2]);
+        n = atoi(argv[1]);
+    }
     srand(time(NULL));
 
     Input = malloc(n * sizeof(long long));
