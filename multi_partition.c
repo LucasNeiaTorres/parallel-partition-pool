@@ -21,9 +21,10 @@ typedef struct
 
 long long *Input;
 int n;
+int nP;
 int numThreads = 2;
 pthread_t threads[MAX_THREADS];
-ThreadData taskQueue[MAX_TASKS];
+ThreadData *taskQueue[MAX_TASKS];
 int taskIndex = 0;
 int tasksInQueue = 0;
 int completedTasks = 0;
@@ -117,7 +118,7 @@ void single_partition(ThreadData *data) {
 void add_task(ThreadData *input) {
     pthread_mutex_lock(&queueMutex);
 
-    taskQueue[(taskIndex + tasksInQueue) % MAX_TASKS] = *input;
+    taskQueue[(taskIndex + tasksInQueue) % MAX_TASKS] = input;
     tasksInQueue++;
 
     pthread_cond_signal(&queueCond);
@@ -128,39 +129,37 @@ void multi_partition(long long *Input, int n, long long *P, int np, long long *O
     ThreadData threadData[np];
     completedTasks = 0;
 
-    for(int i = 0; i < np; i++){
-        if(i-1 < 0){
+    for (int i = 0; i < np; i++) {
+        if (i - 1 < 0) {
             threadData[i].menorP = 0;
         } else {
-            threadData[i].menorP = P[i-1];
+            threadData[i].menorP = P[i - 1];
         }
-        threadData[i].maiorP = P[i];    
+        threadData[i].maiorP = P[i];
         threadData[i].Output = (long long *)malloc(n * sizeof(long long));
         threadData[i].tamOutput = 0;
         threadData[i].capacidadeOutput = n;
         threadData[i].id = i;
-        add_task(&threadData[i]);
+
+        add_task(&threadData[i]);  // Passa o ponteiro para o objeto
     }
 
     // Aguarda até que todas as tarefas estejam concluídas
     pthread_mutex_lock(&completeMutex);
-    while (completedTasks < numThreads) {
+    while (completedTasks < np) {
         pthread_cond_wait(&completeCond, &completeMutex);
     }
     pthread_mutex_unlock(&completeMutex);
-
     int iOutput = 0;
-    for(int i = 0; i < np; i++){
-        // concatena os resultados
-        printf("Thread %d: %d\n", i, threadData[i].tamOutput);  
-        for(int j = 0; j < threadData[i].tamOutput; j++){
+    for (int i = 0; i < np; i++) {
+        // Concatena os resultados
+        for (int j = 0; j < threadData[i].tamOutput; j++) {
             Output[iOutput] = threadData[i].Output[j];
-            printf("Output[%d]: %lld\n", iOutput, Output[iOutput]); 
             iOutput++;
         }
         free(threadData[i].Output);
-        if(i + 1 < np)
-            Pos[i+1] = Pos[i] + threadData[i].tamOutput;
+        if (i + 1 < np)
+            Pos[i + 1] = Pos[i] + threadData[i].tamOutput;
     }
 }
 
@@ -177,30 +176,26 @@ int compare(const void *a, const void *b)
 }
 
 // Função de trabalho da thread
-void *thread_worker(void *arg)
-{
-    while (1)
-    {
+void *thread_worker(void *arg) {
+    while (1) {
         pthread_mutex_lock(&queueMutex);
 
         while (tasksInQueue == 0)
             pthread_cond_wait(&queueCond, &queueMutex);
 
         // Pega uma tarefa da fila
-        ThreadData task = taskQueue[taskIndex];
+        ThreadData *task = taskQueue[taskIndex];
         taskIndex = (taskIndex + 1) % MAX_TASKS;
         tasksInQueue--;
 
         pthread_mutex_unlock(&queueMutex);
 
-        single_partition(&task);  
-        // printf("Resultado da thread de inicio %lld e fim %lld: %d\n", task.menorP, task.maiorP, task.tamOutput);
+        single_partition(task);  // Modifica diretamente o objeto original
 
         // Marca a tarefa como concluída
         pthread_mutex_lock(&completeMutex);
         completedTasks++;
-        if (completedTasks == numThreads)
-        {
+        if (completedTasks == nP) {
             pthread_cond_signal(&completeCond);
         }
         pthread_mutex_unlock(&completeMutex);
@@ -226,7 +221,7 @@ int main()
 {
     srand(time(NULL));
     n = 14;
-    int nP = 10;
+    nP = 10;
 
     Input = malloc(n * sizeof(long long));
     if (Input == NULL)
