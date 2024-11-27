@@ -5,9 +5,11 @@
 #include <time.h>
 #include <limits.h>
 #include "verifica_particoes.h"
+#include "chrono.h"
 
 #define MAX_THREADS 8
 #define MAX_TASKS 1000
+#define NTIMES 10
 
 typedef struct
 {
@@ -219,9 +221,9 @@ void init_thread_pool()
 
 int main()
 {
-    srand(time(NULL));
     n = 14;
     nP = 10;
+    srand(time(NULL));
 
     Input = malloc(n * sizeof(long long));
     if (Input == NULL)
@@ -271,12 +273,24 @@ int main()
 
     init_thread_pool(); 
 
-    multi_partition(Input, n, P, nP, output, pos);
+    double timeSeconds = 0.0;
+    chronometer_t time;
+    chrono_reset(&time);
+    chrono_start(&time);
 
-    printf("Output: ");
-    print_array_long_long(output, n);
-    printf("Pos: ");
-    print_array(pos, nP);
+    for (int i = 0; i < NTIMES; i++) {
+        multi_partition(Input, n, P, nP, output, pos);
+    }
+
+    chrono_stop(&time);
+    timeSeconds += (double)chrono_gettotal(&time) / ((double)1000 * 1000 * 1000); // NanoSeconds para Seconds
+    double tempoMedio = timeSeconds / NTIMES;
+    printf("\ntotal_time_in_seconds: %lf s\n", tempoMedio);
+
+    // printf("Output: ");
+    // print_array_long_long(output, n);
+    // printf("Pos: ");
+    // print_array(pos, nP);
 
     verifica_particoes(Input, n, P, nP, output, pos);
 
