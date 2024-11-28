@@ -1,3 +1,4 @@
+// lógica "melhor"
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -22,7 +23,7 @@ typedef struct
 } ThreadData;
 
 long long *Input;
-int *P;
+long long *P;
 int n;
 int nP;
 int numThreads;
@@ -80,6 +81,7 @@ void adiciona_array(ThreadData *data, int linha, long long valor) {
         data->tempOutput[linha] = (long long *)realloc(data->tempOutput[linha], data->capacidadeOutput[linha] * sizeof(long long));
     }
     data->tempOutput[linha][data->tamOutput[linha]++] = valor;
+    printf("Thread %d adicionando %lld na linha %d e coluna %d\n", data->id, valor, linha, data->tamOutput[linha] - 1);
 }
 
 int bsearch_lower_bound(long long *input, int left, int right, long long x)
@@ -126,12 +128,12 @@ void multi_partition(long long *Input, int n, long long *P, int np, long long *O
         threadData[i].capacidadeOutput = (int *)calloc(np, sizeof(int));
         threadData[i].tempOutput = (long long **)malloc(np * sizeof(long long *));
         for (int j = 0; j < np; j++) {
-            threadData[i].capacidadeOutput[linha] = n / numThreads;
+            threadData[i].capacidadeOutput[j] = n / numThreads;
             threadData[i].tempOutput[j] = (long long *) malloc(threadData[i].capacidadeOutput[j] * sizeof(long long));
         }
         threadData[i].id = i;
 
-        add_task(&threadData[i]);  // Passa o ponteiro para o objeto
+        add_task(&threadData[i]); 
     }
 
     // Aguarda até que todas as tarefas estejam concluídas
@@ -141,22 +143,22 @@ void multi_partition(long long *Input, int n, long long *P, int np, long long *O
     }
     pthread_mutex_unlock(&completeMutex);
     int iOutput = 0;
-    for (int i = 0; i < numThreads; i++) {
-        // Concatena os resultados
-        for (int j = 0; j < np; j++) {
-            for (int k = 0; k < threadData[i].tamOutput[j]; k++) {
-                Output[iOutput] = threadData[i].tempOutput[j][k];
+
+    // concatena resultados
+    for(int i = 0; i < np; i++) {
+        for(int j = 0; j < numThreads; j++) {
+            for(int k = 0; k < threadData[j].tamOutput[i]; k++) {
+                Output[iOutput] = threadData[j].tempOutput[i][k];
                 iOutput++;
             }
-            free(threadData[i].tempOutput[j]);
+            free(threadData[j].tempOutput[i]);
+            if(i + 1 < np)
+                Pos[i + 1] = Pos[i] + threadData[j].tamOutput[i];
         }
-
-        free(threadData[i].tempOutput);
-        free(threadData[i].tamOutput);
-        free(threadData[i].capacidadeOutput);
-        // calcula Pos corretamente
-        
+        // free(threadData[i].tamOutput);
+        // free(threadData[i].capacidadeOutput);
     }
+    // da free no resto
 }
 
 int compare(const void *a, const void *b)
@@ -186,7 +188,7 @@ void *thread_worker(void *arg) {
 
         pthread_mutex_unlock(&queueMutex);
 
-        single_partition(task);  // Modifica diretamente o objeto original
+        single_partition(task); 
 
         // Marca a tarefa como concluída
         pthread_mutex_lock(&completeMutex);
@@ -237,7 +239,7 @@ int main(int argc, char *argv[])
 
     geraNaleatorios(Input, n);
 
-    *P = malloc(nP * sizeof(long long));
+    P = malloc(nP * sizeof(long long));
     if (P == NULL)
     {
         fprintf(stderr, "Erro ao alocar memória para P\n");

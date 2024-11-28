@@ -11,6 +11,7 @@ void verifica_particoes(long long *Input, int n, long long *P, int np, long long
         if (Pos[i] > n)
         {
             printf("particionamento COM ERROS\n");
+            printf("1 - Pos[%d] = %d > %d\n", i, Pos[i], n);
             return;
         }
 
@@ -21,6 +22,7 @@ void verifica_particoes(long long *Input, int n, long long *P, int np, long long
             if (Pos[i] > Pos[i + 1])
             {
                 printf("particionamento COM ERROS\n");
+                printf("2 - Pos[%d] = %d > Pos[%d] = %d\n", i, Pos[i], i + 1, Pos[i + 1]);
                 return;
             }
             for (j = Pos[i]; j < Pos[i + 1]; j++)
@@ -28,6 +30,7 @@ void verifica_particoes(long long *Input, int n, long long *P, int np, long long
                 if (Output[j] >= P[i])
                 {
                     printf("particionamento COM ERROS\n");
+                    printf("3 - Output[%d] = %lld >= P[%d] = %lld\n", j, Output[j], i, P[i]);
                     return;
                 }
             }
@@ -40,6 +43,7 @@ void verifica_particoes(long long *Input, int n, long long *P, int np, long long
                 if (Output[j] >= P[i])
                 {
                     printf("particionamento COM ERROS\n");
+                    printf("4 - Output[%d] = %lld >= P[%d] = %lld\n", j, Output[j], i, P[i]);
                     return;
                 }
             }
