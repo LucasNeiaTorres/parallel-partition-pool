@@ -22,6 +22,7 @@ typedef struct
     int id;
 } ThreadData;
 
+// long long **tempOutput;
 long long *Input;
 long long *P;
 int n;
@@ -81,7 +82,7 @@ void adiciona_array(ThreadData *data, int linha, long long valor) {
         data->tempOutput[linha] = (long long *)realloc(data->tempOutput[linha], data->capacidadeOutput[linha] * sizeof(long long));
     }
     data->tempOutput[linha][data->tamOutput[linha]++] = valor;
-    printf("Thread %d adicionando %lld na linha %d e coluna %d\n", data->id, valor, linha, data->tamOutput[linha] - 1);
+    // printf("Thread %d adicionando %lld na linha %d e coluna %d\n", data->id, valor, linha, data->tamOutput[linha] - 1);
 }
 
 int bsearch_lower_bound(long long *input, int left, int right, long long x)
@@ -127,9 +128,17 @@ void multi_partition(long long *Input, int n, long long *P, int np, long long *O
         threadData[i].tamOutput = (int *)calloc(np, sizeof(int));
         threadData[i].capacidadeOutput = (int *)calloc(np, sizeof(int));
         threadData[i].tempOutput = (long long **)malloc(np * sizeof(long long *));
+        if (threadData[i].tamOutput == NULL || threadData[i].capacidadeOutput == NULL || threadData[i].tempOutput == NULL) {
+            fprintf(stderr, "Memory allocation failed for threadData[%d]\n", i);
+            exit(EXIT_FAILURE);
+        }
         for (int j = 0; j < np; j++) {
             threadData[i].capacidadeOutput[j] = n / numThreads;
             threadData[i].tempOutput[j] = (long long *) malloc(threadData[i].capacidadeOutput[j] * sizeof(long long));
+            if (threadData[i].tempOutput[j] == NULL) {
+                fprintf(stderr, "Memory allocation failed for threadData[%d].tempOutput[%d]\n", i, j);
+                exit(EXIT_FAILURE);
+            }
         }
         threadData[i].id = i;
 
@@ -155,10 +164,13 @@ void multi_partition(long long *Input, int n, long long *P, int np, long long *O
             if(i + 1 < np)
                 Pos[i + 1] = Pos[i] + threadData[j].tamOutput[i];
         }
-        // free(threadData[i].tamOutput);
-        // free(threadData[i].capacidadeOutput);
     }
-    // da free no resto
+
+    for (int i = 0; i < numThreads; i++) {
+        free(threadData[i].tamOutput);
+        free(threadData[i].capacidadeOutput);
+        free(threadData[i].tempOutput);
+    }
 }
 
 int compare(const void *a, const void *b)
