@@ -90,7 +90,7 @@ int bsearch_lower_bound(long long *input, int left, int right, long long x)
     while (left < right)
     {
         int m = left + (right - left) / 2;
-        if (input[m] < x)
+        if (input[m]-1 < x) // - 1 pois 
             left = m + 1;
         else
             right = m;
@@ -133,7 +133,7 @@ void multi_partition(long long *Input, int n, long long *P, int np, long long *O
             exit(EXIT_FAILURE);
         }
         for (int j = 0; j < np; j++) {
-            threadData[i].capacidadeOutput[j] = n / numThreads;
+            threadData[i].capacidadeOutput[j] = 1000;
             threadData[i].tempOutput[j] = (long long *) malloc(threadData[i].capacidadeOutput[j] * sizeof(long long));
             if (threadData[i].tempOutput[j] == NULL) {
                 fprintf(stderr, "Memory allocation failed for threadData[%d].tempOutput[%d]\n", i, j);
