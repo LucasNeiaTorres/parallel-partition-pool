@@ -1,4 +1,6 @@
 // lógica "melhor"
+// Autores: Lucas Néia Torres, Inaiê Moscal Zambonin
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>

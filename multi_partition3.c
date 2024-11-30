@@ -1,3 +1,5 @@
+// Autores: Lucas Néia Torres, Inaiê Moscal Zambonin
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
@@ -6,6 +8,7 @@
 #include <limits.h>
 #include "verifica_particoes.h"
 #include "chrono.h"
+
 
 #define MAX_THREADS 8
 #define MAX_TASKS 1000

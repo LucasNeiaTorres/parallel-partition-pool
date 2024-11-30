@@ -1,3 +1,5 @@
+// Autores: Lucas Néia Torres, Inaiê Moscal Zambonin
+
 #include <stdio.h>
 #include "verifica_particoes.h"
 

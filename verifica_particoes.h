@@ -1,3 +1,5 @@
+// Autores: Lucas Néia Torres, Inaiê Moscal Zambonin
+
 #ifndef VERIFICA_PARTICOES_H
 #define VERIFICA_PARTICOES_H
 
