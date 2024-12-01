@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "USAGE: ./rodaTodos.sh <nElementsInput> <nElementsP>"
+echo "USAGE: ./roda-todos-slurm.sh <nElementsInput> <nElementsP>"
 echo "$0 rodando no host " `hostname`  
 echo "$0 rodando no host " `hostname` >saida.txt
 

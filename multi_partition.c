@@ -31,15 +31,7 @@ int n;
 int nP;
 int numThreads;
 pthread_t threads[MAX_THREADS];
-ThreadData *taskQueue[MAX_TASKS];
-int taskIndex = 0;
-int tasksInQueue = 0;
-int completedTasks = 0;
-
-pthread_mutex_t queueMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t completeMutex = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t queueCond = PTHREAD_COND_INITIALIZER;
-pthread_cond_t completeCond = PTHREAD_COND_INITIALIZER;
+ThreadData threadData[MAX_THREADS];
 
 long long geraAleatorioLL()
 {
@@ -92,7 +84,7 @@ int bsearch_lower_bound(long long *input, int left, int right, long long x)
     while (left < right)
     {
         int m = left + (right - left) / 2;
-        if (input[m]-1 < x) // - 1 pois 
+        if (input[m]-1 < x)
             left = m + 1;
         else
             right = m;
@@ -100,41 +92,33 @@ int bsearch_lower_bound(long long *input, int left, int right, long long x)
     return left;
 }
 
-void single_partition(ThreadData *data) {
-    for(int i = data->inicio; i < data->fim; i++) {
+
+// Função de trabalho da thread
+void *thread_worker(void *arg) {
+    ThreadData *data = (ThreadData *)arg;
+    // printf("2 - Thread %d iniciando do início %d e fim %d \n", data->id, data->inicio, data->fim);
+    for (int i = data->inicio; i < data->fim; i++) {
         int posL = bsearch_lower_bound(P, 0, nP, Input[i]);
         adiciona_array(data, posL, Input[i]);
     }
-} 
-
-// Adiciona uma tarefa ao pool de threads
-void add_task(ThreadData *input) {
-    pthread_mutex_lock(&queueMutex);
-
-    taskQueue[(taskIndex + tasksInQueue) % MAX_TASKS] = input;
-    tasksInQueue++;
-
-    pthread_cond_signal(&queueCond);
-    pthread_mutex_unlock(&queueMutex);
 }
 
-void multi_partition(long long *Input, int n, long long *P, int np, long long *Output, int *Pos) {
-    ThreadData threadData[numThreads];
+void multi_partition(long long *Input, int n, long long *P, int nP, long long *Output, int *Pos) {
     int chunkSize = (n + numThreads - 1) / numThreads;
-    completedTasks = 0;
-
+    
+    // Configuração de threads
     for (int i = 0; i < numThreads; i++) {
         threadData[i].inicio = i * chunkSize;
         int fim = (i + 1) * chunkSize;
         threadData[i].fim = (fim > n) ? n : fim;
-        threadData[i].tamOutput = (int *)calloc(np, sizeof(int));
-        threadData[i].capacidadeOutput = (int *)calloc(np, sizeof(int));
-        threadData[i].tempOutput = (long long **)malloc(np * sizeof(long long *));
+        threadData[i].tamOutput = (int *)calloc(nP, sizeof(int));
+        threadData[i].capacidadeOutput = (int *)calloc(nP, sizeof(int));
+        threadData[i].tempOutput = (long long **)malloc(nP * sizeof(long long *));
         if (threadData[i].tamOutput == NULL || threadData[i].capacidadeOutput == NULL || threadData[i].tempOutput == NULL) {
             fprintf(stderr, "Memory allocation failed for threadData[%d]\n", i);
             exit(EXIT_FAILURE);
         }
-        for (int j = 0; j < np; j++) {
+        for (int j = 0; j < nP; j++) {
             threadData[i].capacidadeOutput[j] = 1000;
             threadData[i].tempOutput[j] = (long long *) malloc(threadData[i].capacidadeOutput[j] * sizeof(long long));
             if (threadData[i].tempOutput[j] == NULL) {
@@ -143,27 +127,25 @@ void multi_partition(long long *Input, int n, long long *P, int np, long long *O
             }
         }
         threadData[i].id = i;
-
-        add_task(&threadData[i]); 
+        pthread_create(&threads[i], NULL, thread_worker, &threadData[i]);
     }
 
-    // Aguarda até que todas as tarefas estejam concluídas
-    pthread_mutex_lock(&completeMutex);
-    while (completedTasks < numThreads) {
-        pthread_cond_wait(&completeCond, &completeMutex);
+    // Aguardando threads
+    for (int i = 0; i < numThreads; i++) {
+        pthread_join(threads[i], NULL);
     }
-    pthread_mutex_unlock(&completeMutex);
+
     int iOutput = 0;
 
     // concatena resultados
-    for(int i = 0; i < np; i++) {
+    for(int i = 0; i < nP; i++) {
         for(int j = 0; j < numThreads; j++) {
             for(int k = 0; k < threadData[j].tamOutput[i]; k++) {
                 Output[iOutput] = threadData[j].tempOutput[i][k];
                 iOutput++;
             }
             free(threadData[j].tempOutput[i]);
-            if(i + 1 < np)
+            if(i + 1 < nP)
                 Pos[i + 1] = Pos[i] + threadData[j].tamOutput[i];
         }
     }
@@ -186,48 +168,6 @@ int compare(const void *a, const void *b)
         return 1;
     return 0;
 }
-
-// Função de trabalho da thread
-void *thread_worker(void *arg) {
-    while (1) {
-        pthread_mutex_lock(&queueMutex);
-
-        while (tasksInQueue == 0)
-            pthread_cond_wait(&queueCond, &queueMutex);
-
-        // Pega uma tarefa da fila
-        ThreadData *task = taskQueue[taskIndex];
-        taskIndex = (taskIndex + 1) % MAX_TASKS;
-        tasksInQueue--;
-
-        pthread_mutex_unlock(&queueMutex);
-
-        single_partition(task); 
-
-        // Marca a tarefa como concluída
-        pthread_mutex_lock(&completeMutex);
-        completedTasks++;
-        if (completedTasks == numThreads) {
-            pthread_cond_signal(&completeCond);
-        }
-        pthread_mutex_unlock(&completeMutex);
-    }
-}
-
-// Inicializa o pool de threads
-void init_thread_pool()
-{
-    for (int i = 0; i < numThreads; i++)
-    {
-        if (pthread_create(&threads[i], NULL, thread_worker, NULL) != 0) {
-            fprintf(stderr, "Erro ao criar thread %d\n", i);
-        // } else {
-            // printf("Thread %d criada\n", i);
-        }
-    }
-}
-
-// TODO: corrige veriicação particionamento: tudo 0 está dando correto
 
 int main(int argc, char *argv[])
 {
@@ -265,11 +205,6 @@ int main(int argc, char *argv[])
     P[nP - 1] = LLONG_MAX;
 
     qsort(P, nP, sizeof(long long), compare);
-
-    // printf("Input: ");
-    // print_array_long_long(Input, n);
-    // printf("P: ");
-    // print_array_long_long(P, nP);
 
     long long *output = malloc(n * sizeof(long long));
     if (output == NULL)
@@ -315,8 +250,6 @@ int main(int argc, char *argv[])
         memcpy(inputG + (j * n), Input, n * sizeof(long long));
         memcpy(PG + (j * nP), P, nP * sizeof(long long));
     }
-
-    init_thread_pool(); 
 
     double timeSeconds = 0.0;
     chronometer_t time;
