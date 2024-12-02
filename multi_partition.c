@@ -262,8 +262,8 @@ int main(int argc, char *argv[])
 
     chrono_stop(&time);
     timeSeconds += (double)chrono_gettotal(&time) / ((double)1000 * 1000 * 1000); // NanoSeconds para Seconds
-    double tempoMedio = timeSeconds / NTIMES;
-    printf("\ntotal_time_in_seconds: %lf s\n", tempoMedio);
+    // double tempoMedio = timeSeconds / NTIMES;
+    printf("\ntotal_time_in_seconds: %lf s\n", timeSeconds);
 
     // printf("Output: ");
     // print_array_long_long(output, n);
