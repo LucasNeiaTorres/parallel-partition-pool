@@ -270,7 +270,7 @@ int main(int argc, char *argv[])
     // printf("Pos: ");
     // print_array(pos, nP);
 
-    verifica_particoes(Input, n, P, nP, output, pos);
+    // verifica_particoes(Input, n, P, nP, output, pos);
 
     free(output);
     free(pos);
