@@ -119,7 +119,7 @@ void multi_partition(long long *Input, int n, long long *P, int nP, long long *O
             exit(EXIT_FAILURE);
         }
         for (int j = 0; j < nP; j++) {
-            threadData[i].capacidadeOutput[j] = 400;
+            threadData[i].capacidadeOutput[j] = 1000;
             threadData[i].tempOutput[j] = (long long *) malloc(threadData[i].capacidadeOutput[j] * sizeof(long long));
             if (threadData[i].tempOutput[j] == NULL) {
                 fprintf(stderr, "Memory allocation failed for threadData[%d].tempOutput[%d]\n", i, j);
