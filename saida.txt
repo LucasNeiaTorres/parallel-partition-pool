@@ -1,0 +1,241 @@
+./roda-todos-slurm.sh rodando no host  venkonote-4
+-----------------------
+
+total_time_in_seconds: 2.413091 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 2.392578 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 2.172036 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 2.131500 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 2.155749 s
+particionamento CORRETO
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+
+total_time_in_seconds: 1.454861 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.176234 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.172409 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.167290 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.193935 s
+particionamento CORRETO
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+
+total_time_in_seconds: 1.019361 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.968523 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.967648 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.965227 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.973778 s
+particionamento CORRETO
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+
+total_time_in_seconds: 0.925169 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.818571 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.884522 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.935386 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.875269 s
+particionamento CORRETO
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+
+total_time_in_seconds: 1.033074 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.895035 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.458899 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.872497 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.877652 s
+particionamento CORRETO
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+
+total_time_in_seconds: 1.657337 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.942779 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.639512 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.268981 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.794075 s
+particionamento CORRETO
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+
+total_time_in_seconds: 2.167135 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 0.886163 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 2.507668 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.503132 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.054462 s
+particionamento CORRETO
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+
+total_time_in_seconds: 1.888131 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 3.237582 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.973088 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.249185 s
+particionamento CORRETO
+-----------------------
+
+total_time_in_seconds: 1.213725 s
+particionamento CORRETO
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
+-----------------------
+nao executado
