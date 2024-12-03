@@ -22,7 +22,6 @@ do
         if [ $j -le $MAX_EXECS ];
         then 
           ./multi_partition $1 $2 $i | tee -a saida.txt | grep -oP '(?<=total_time_in_seconds: )[^ ]*'
-          squeue -j $SLURM_JOBID
         else
           echo "nao executado" | tee -a saida.txt 
         fi  
