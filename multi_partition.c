@@ -138,16 +138,23 @@ void multi_partition(long long *Input, int n, long long *P, int nP, long long *O
     int iOutput = 0;
 
     // concatena resultados
-    for(int i = 0; i < nP; i++) {
-        for(int j = 0; j < numThreads; j++) {
-            for(int k = 0; k < threadData[j].tamOutput[i]; k++) {
+    for (int i = 0; i < nP; i++) {
+        for (int j = 0; j < numThreads; j++) {
+            for (int k = 0; k < threadData[j].tamOutput[i]; k++) {
                 Output[iOutput] = threadData[j].tempOutput[i][k];
                 iOutput++;
             }
             free(threadData[j].tempOutput[i]);
-            if(i + 1 < nP)
-                Pos[i + 1] = Pos[i] + threadData[j].tamOutput[i];
         }
+
+        // Atualizar Pos[i + 1] após processar todas as threads
+        if (i + 1 < nP) {
+            int totalTam = 0;
+            for (int j = 0; j < numThreads; j++) {
+                totalTam += threadData[j].tamOutput[i];
+            }
+            Pos[i + 1] = Pos[i] + totalTam;
+            }
     }
 
     for (int i = 0; i < numThreads; i++) {
@@ -270,7 +277,7 @@ int main(int argc, char *argv[])
     // printf("Pos: ");
     // print_array(pos, nP);
 
-    // verifica_particoes(Input, n, P, nP, output, pos);
+    verifica_particoes(Input, n, P, nP, output, pos);
 
     free(output);
     free(pos);
